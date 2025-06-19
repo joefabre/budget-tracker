@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Personal Budget Tracker - Track your income and expenses with intelligent insights. 508 compliant and accessible.">
+    <title>Personal Budget Tracker - Accessible Financial Management</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Skip to main content link for screen readers -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <div class="container">
+        <header class="header" role="banner">
+            <h1>Personal Budget Tracker</h1>
+            <p>Track your income and expenses with intelligent insights</p>
+        </header>
+
+        <main id="main-content" role="main">
+            <h2 class="sr-only">Budget Management Interface</h2>
+
+        <div class="controls" role="toolbar" aria-label="Budget controls">
+            <div>
+                <label for="yearSelect" class="sr-only">Select budget year</label>
+                <select id="yearSelect" aria-label="Budget year selection">
+                    <option value="2024">2024</option>
+                    <option value="2025" selected>2025</option>
+                    <option value="2026">2026</option>
+                </select>
+                <button onclick="addYear()" aria-label="Add a new year to budget">Add Year</button>
+            </div>
+            <div>
+                <button onclick="saveData()" aria-label="Save current budget data">Save Data</button>
+                <button onclick="showCharts()" aria-label="View budget activity charts">View Charts</button>
+                <button onclick="printBudget()" aria-label="Print budget summary with charts">Print Summary</button>
+                <button onclick="loadData()" aria-label="Load previously saved budget data">Load Data</button>
+                <button onclick="resetData()" aria-label="Reset all budget data to zero">Reset All</button>
+            </div>
+        </div>
+
+        <section class="summary-cards" role="region" aria-labelledby="summary-heading">
+            <h2 id="summary-heading" class="sr-only">Budget Summary</h2>
+            <div class="summary-card income" role="article" aria-labelledby="income-heading">
+                <h3 id="income-heading">Total Income</h3>
+                <div class="amount" id="totalIncome" aria-live="polite">$0.00</div>
+                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Income progress indicator">
+                    <div class="progress-fill" id="incomeProgress" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="summary-card expense" role="article" aria-labelledby="expense-heading">
+                <h3 id="expense-heading">Total Expenses</h3>
+                <div class="amount" id="totalExpenses" aria-live="polite">$0.00</div>
+                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Expense progress indicator">
+                    <div class="progress-fill" id="expenseProgress" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="summary-card balance" role="article" aria-labelledby="balance-heading">
+                <h3 id="balance-heading">Net Balance</h3>
+                <div class="amount" id="netBalance" aria-live="polite">$0.00</div>
+                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Balance progress indicator">
+                    <div class="progress-fill" id="balanceProgress" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="summary-card" role="article" aria-labelledby="savings-heading">
+                <h3 id="savings-heading">Savings Rate</h3>
+                <div class="amount" id="savingsRate" aria-live="polite">0%</div>
+                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Savings rate progress indicator">
+                    <div class="progress-fill" id="savingsProgress" style="width: 0%"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Revenue Section -->
+        <section class="budget-section" role="region" aria-labelledby="revenue-heading">
+            <div class="section-header">
+                <h2 id="revenue-heading">💰 REVENUE</h2>
+                <button class="section-toggle" onclick="toggleSection('revenue')" aria-label="Toggle revenue section visibility" aria-expanded="true" aria-controls="revenue-content">−</button>
+            </div>
+            <div id="revenue-content">
+                <div class="table-container">
+                    <table class="budget-table">
+                    <thead>
+                        <tr>
+                            <th>Income Source</th>
+                            <th class="month-header">Jan</th>
+                            <th class="month-header">Feb</th>
+                            <th class="month-header">Mar</th>
+                            <th class="month-header">Apr</th>
+                            <th class="month-header">May</th>
+                            <th class="month-header">Jun</th>
+                            <th class="month-header">Jul</th>
+                            <th class="month-header">Aug</th>
+                            <th class="month-header">Sep</th>
+                            <th class="month-header">Oct</th>
+                            <th class="month-header">Nov</th>
+                            <th class="month-header">Dec</th>
+                            <th class="month-header">Year Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="revenue-tbody">
+                        <tr data-category="income">
+                            <td>Federal Salary</td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td class="year-total">$0.00</td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr data-category="income">
+                            <td>Navy Retirement</td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td class="year-total">$0.00</td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr data-category="income">
+                            <td>VA Benefits</td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td class="year-total">$0.00</td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr data-category="income">
+                            <td>Interest/Dividends</td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td class="year-total">$0.00</td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr data-category="income">
+                            <td>Miscellaneous</td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td class="year-total">$0.00</td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td><strong>Total Income</strong></td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="year-total">$0.00</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                <div class="add-item">
+                    <button onclick="addIncomeRow()">+ Add Income Source</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Expenses Sections -->
+        <!-- Home Section -->
+        <section class="budget-section" role="region" aria-labelledby="home-heading">
+            <div class="section-header">
+                <h2 id="home-heading">🏠 HOME</h2>
+                <button class="section-toggle" onclick="toggleSection('home')" aria-label="Toggle home section visibility" aria-expanded="true" aria-controls="home-content">−</button>
+            </div>
+            <div id="home-content">
+                <div class="table-container">
+                    <table class="budget-table">
+                    <thead>
+                        <tr>
+                            <th>Expense Item</th>
+                            <th class="month-header">Jan</th>
+                            <th class="month-header">Feb</th>
+                            <th class="month-header">Mar</th>
+                            <th class="month-header">Apr</th>
+                            <th class="month-header">May</th>
+                            <th class="month-header">Jun</th>
+                            <th class="month-header">Jul</th>
+                            <th class="month-header">Aug</th>
+                            <th class="month-header">Sep</th>
+                            <th class="month-header">Oct</th>
+                            <th class="month-header">Nov</th>
+                            <th class="month-header">Dec</th>
+                            <th class="month-header">Year Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="home-tbody">
+                        <tr data-category="home">
+                            <td>Mortgage</td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td class="year-total">$0.00</td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr data-category="home">
+                            <td>HOA</td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td class="year-total">$0.00</td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr data-category="home">
+                            <td>Repairs</td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td class="year-total">$0.00</td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr data-category="home">
+                            <td>Utilities</td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td class="year-total">$0.00</td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td><strong>Home Total</strong></td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="year-total">$0.00</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                <div class="add-item">
+                    <button onclick="addExpenseRow('home')">+ Add Home Expense</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Daily Living Section -->
+        <section class="budget-section" role="region" aria-labelledby="daily-living-heading">
+            <div class="section-header">
+                <h2 id="daily-living-heading">🥘 DAILY LIVING</h2>
+                <button class="section-toggle" onclick="toggleSection('daily-living')" aria-label="Toggle daily living section visibility" aria-expanded="true" aria-controls="daily-living-content">−</button>
+            </div>
+            <div id="daily-living-content">
+                <div class="table-container">
+                    <table class="budget-table">
+                    <thead>
+                        <tr>
+                            <th>Expense Item</th>
+                            <th class="month-header">Jan</th>
+                            <th class="month-header">Feb</th>
+                            <th class="month-header">Mar</th>
+                            <th class="month-header">Apr</th>
+                            <th class="month-header">May</th>
+                            <th class="month-header">Jun</th>
+                            <th class="month-header">Jul</th>
+                            <th class="month-header">Aug</th>
+                            <th class="month-header">Sep</th>
+                            <th class="month-header">Oct</th>
+                            <th class="month-header">Nov</th>
+                            <th class="month-header">Dec</th>
+                            <th class="month-header">Year Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="daily-living-tbody">
+                        <tr data-category="daily-living">
+                            <td>Groceries</td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td class="year-total">$0.00</td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr data-category="daily-living">
+                            <td>Dining Out</td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td class="year-total">$0.00</td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr data-category="daily-living">
+                            <td>House Cleaning</td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td class="year-total">$0.00</td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td><strong>Daily Living Total</strong></td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="year-total">$0.00</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                <div class="add-item">
+                    <button onclick="addExpenseRow('daily-living')">+ Add Daily Living Expense</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Transportation Section -->
+        <section class="budget-section" role="region" aria-labelledby="transportation-heading">
+            <div class="section-header">
+                <h2 id="transportation-heading">🚗 TRANSPORTATION</h2>
+                <button class="section-toggle" onclick="toggleSection('transportation')" aria-label="Toggle transportation section visibility" aria-expanded="true" aria-controls="transportation-content">−</button>
+            </div>
+            <div id="transportation-content">
+                <div class="table-container">
+                    <table class="budget-table">
+                    <thead>
+                        <tr>
+                            <th>Expense Item</th>
+                            <th class="month-header">Jan</th>
+                            <th class="month-header">Feb</th>
+                            <th class="month-header">Mar</th>
+                            <th class="month-header">Apr</th>
+                            <th class="month-header">May</th>
+                            <th class="month-header">Jun</th>
+                            <th class="month-header">Jul</th>
+                            <th class="month-header">Aug</th>
+                            <th class="month-header">Sep</th>
+                            <th class="month-header">Oct</th>
+                            <th class="month-header">Nov</th>
+                            <th class="month-header">Dec</th>
+                            <th class="month-header">Year Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transportation-tbody">
+                        <tr data-category="transportation">
+                            <td>Gas/Fuel</td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td class="year-total">$0.00</td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr data-category="transportation">
+                            <td>Insurance</td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td class="year-total">$0.00</td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr data-category="transportation">
+                            <td>Car Wash/Detailing</td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td class="year-total">$0.00</td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td><strong>Transportation Total</strong></td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="year-total">$0.00</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                <div class="add-item">
+                    <button onclick="addExpenseRow('transportation')">+ Add Transportation Expense</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Continue with other sections... -->
+        <!-- Entertainment Section -->
+        <section class="budget-section" role="region" aria-labelledby="entertainment-heading">
+            <div class="section-header">
+                <h2 id="entertainment-heading">🎬 ENTERTAINMENT</h2>
+                <button class="section-toggle" onclick="toggleSection('entertainment')" aria-label="Toggle entertainment section visibility" aria-expanded="true" aria-controls="entertainment-content">−</button>
+            </div>
+            <div id="entertainment-content">
+                <div class="table-container">
+                    <table class="budget-table">
+                    <thead>
+                        <tr>
+                            <th>Expense Item</th>
+                            <th class="month-header">Jan</th>
+                            <th class="month-header">Feb</th>
+                            <th class="month-header">Mar</th>
+                            <th class="month-header">Apr</th>
+                            <th class="month-header">May</th>
+                            <th class="month-header">Jun</th>
+                            <th class="month-header">Jul</th>
+                            <th class="month-header">Aug</th>
+                            <th class="month-header">Sep</th>
+                            <th class="month-header">Oct</th>
+                            <th class="month-header">Nov</th>
+                            <th class="month-header">Dec</th>
+                            <th class="month-header">Year Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="entertainment-tbody">
+                        <tr data-category="entertainment">
+                            <td>Cable TV</td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td class="year-total">$0.00</td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr data-category="entertainment">
+                            <td>Internet</td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td class="year-total">$0.00</td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr data-category="entertainment">
+                            <td>Cellphone</td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td class="year-total">$0.00</td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td><strong>Entertainment Total</strong></td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="year-total">$0.00</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                <div class="add-item">
+                    <button onclick="addExpenseRow('entertainment')">+ Add Entertainment Expense</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Financial Obligations Section -->
+        <section class="budget-section" role="region" aria-labelledby="financial-heading">
+            <div class="section-header">
+                <h2 id="financial-heading">💰 FINANCIAL OBLIGATIONS</h2>
+                <button class="section-toggle" onclick="toggleSection('financial')" aria-label="Toggle financial section visibility" aria-expanded="true" aria-controls="financial-content">−</button>
+            </div>
+            <div id="financial-content">
+                <div class="table-container">
+                    <table class="budget-table">
+                    <thead>
+                        <tr>
+                            <th>Expense Item</th>
+                            <th class="month-header">Jan</th>
+                            <th class="month-header">Feb</th>
+                            <th class="month-header">Mar</th>
+                            <th class="month-header">Apr</th>
+                            <th class="month-header">May</th>
+                            <th class="month-header">Jun</th>
+                            <th class="month-header">Jul</th>
+                            <th class="month-header">Aug</th>
+                            <th class="month-header">Sep</th>
+                            <th class="month-header">Oct</th>
+                            <th class="month-header">Nov</th>
+                            <th class="month-header">Dec</th>
+                            <th class="month-header">Year Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="financial-tbody">
+                        <tr data-category="financial">
+                            <td>Long-term Savings</td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td class="year-total">$0.00</td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr data-category="financial">
+                            <td>Short-term Savings</td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td class="year-total">$0.00</td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr data-category="financial">
+                            <td>Credit Card Payments</td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                            <td class="year-total">$0.00</td>
+                            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td><strong>Financial Obligations Total</strong></td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="month-total">$0.00</td>
+                            <td class="year-total">$0.00</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                <div class="add-item">
+                    <button onclick="addExpenseRow('financial')">+ Add Financial Obligation</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Export Controls -->
+        <div class="export-controls">
+            <button onclick="exportToCSV()">Export to CSV</button>
+            <button onclick="exportToJSON()">Export to JSON</button>
+            <button onclick="printBudget()">Print Budget</button>
+            <button onclick="openHelp()" aria-label="Open help and documentation">Help & Documentation</button>
+        </div>
+        
+        <!-- Print Charts Section (hidden, only shown when printing) -->
+        <div class="print-charts" style="display: none;">
+            <div class="print-chart-section">
+                <h3>Monthly Income vs Expenses</h3>
+                <canvas id="printMonthlyChart" width="600" height="300"></canvas>
+            </div>
+            <div class="print-chart-section">
+                <h3>Expense Breakdown by Category</h3>
+                <canvas id="printExpenseChart" width="600" height="300"></canvas>
+            </div>
+            <div class="print-chart-section">
+                <h3>Savings Trend</h3>
+                <canvas id="printSavingsChart" width="600" height="300"></canvas>
+            </div>
+        </div>
+        </main>
+    </div>
+
+    <script>
+        // Global variables
+        let currentYear = 2025;
+        let budgetData = {};
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            calculateTotals();
+            loadFromLocalStorage();
+        });
+
+        // Toggle section visibility
+        function toggleSection(sectionId) {
+            const content = document.getElementById(sectionId + '-content');
+            const toggle = content.parentElement.querySelector('.section-toggle');
+            
+            if (content.classList.contains('collapsed')) {
+                content.classList.remove('collapsed');
+                toggle.textContent = '−';
+            } else {
+                content.classList.add('collapsed');
+                toggle.textContent = '+';
+            }
+        }
+
+        // Calculate all totals
+        function calculateTotals() {
+            const sections = ['revenue', 'home', 'daily-living', 'transportation', 'entertainment', 'financial'];
+            let totalIncome = 0;
+            let totalExpenses = 0;
+
+            sections.forEach(section => {
+                const tbody = document.getElementById(section + '-tbody');
+                if (!tbody) return;
+                
+                const rows = tbody.querySelectorAll('tr[data-category]');
+                const totalRow = tbody.querySelector('.total-row');
+                
+                if (!totalRow) return;
+
+                // Calculate monthly and yearly totals for this section
+                const monthlyTotals = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                let yearlyTotal = 0;
+
+                rows.forEach(row => {
+                    const inputs = row.querySelectorAll('input[type="number"]');
+                    let rowYearlyTotal = 0;
+                    
+                    inputs.forEach((input, index) => {
+                        const value = parseFloat(input.value) || 0;
+                        monthlyTotals[index] += value;
+                        rowYearlyTotal += value;
+                    });
+                    
+                    // Update row yearly total
+                    const yearTotalCell = row.querySelector('.year-total');
+                    if (yearTotalCell) {
+                        yearTotalCell.textContent = formatCurrency(rowYearlyTotal);
+                    }
+                });
+
+                // Update section totals
+                const monthTotalCells = totalRow.querySelectorAll('.month-total');
+                monthTotalCells.forEach((cell, index) => {
+                    cell.textContent = formatCurrency(monthlyTotals[index]);
+                });
+
+                yearlyTotal = monthlyTotals.reduce((sum, month) => sum + month, 0);
+                const yearTotalCell = totalRow.querySelector('.year-total');
+                if (yearTotalCell) {
+                    yearTotalCell.textContent = formatCurrency(yearlyTotal);
+                }
+
+                // Add to grand totals
+                if (section === 'revenue') {
+                    totalIncome += yearlyTotal;
+                } else {
+                    totalExpenses += yearlyTotal;
+                }
+            });
+
+            // Update summary cards
+            const netBalance = totalIncome - totalExpenses;
+            const savingsRate = totalIncome > 0 ? ((netBalance / totalIncome) * 100) : 0;
+
+            document.getElementById('totalIncome').textContent = formatCurrency(totalIncome);
+            document.getElementById('totalExpenses').textContent = formatCurrency(totalExpenses);
+            document.getElementById('netBalance').textContent = formatCurrency(netBalance);
+            document.getElementById('savingsRate').textContent = savingsRate.toFixed(1) + '%';
+
+            // Update progress bars
+            if (totalIncome > 0) {
+                document.getElementById('incomeProgress').style.width = '100%';
+                document.getElementById('expenseProgress').style.width = ((totalExpenses / totalIncome) * 100) + '%';
+                document.getElementById('balanceProgress').style.width = Math.abs((netBalance / totalIncome) * 100) + '%';
+                document.getElementById('savingsProgress').style.width = Math.abs(savingsRate) + '%';
+            } else {
+                document.getElementById('incomeProgress').style.width = '0%';
+                document.getElementById('expenseProgress').style.width = '0%';
+                document.getElementById('balanceProgress').style.width = '0%';
+                document.getElementById('savingsProgress').style.width = '0%';
+            }
+
+            // Update balance color
+            const balanceElement = document.getElementById('netBalance');
+            const balanceCard = balanceElement.closest('.summary-card');
+            if (netBalance >= 0) {
+                balanceCard.classList.remove('expense');
+                balanceCard.classList.add('income');
+            } else {
+                balanceCard.classList.remove('income');
+                balanceCard.classList.add('expense');
+            }
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            }).format(amount);
+        }
+
+        // Add new income row
+        function addIncomeRow() {
+            const name = prompt('Enter income source name:');
+            if (!name) return;
+
+            const tbody = document.getElementById('revenue-tbody');
+            const totalRow = tbody.querySelector('.total-row');
+            
+            const newRow = document.createElement('tr');
+            newRow.setAttribute('data-category', 'income');
+            newRow.innerHTML = `
+                <td>${name}</td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td class="year-total">$0.00</td>
+                <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+            `;
+            
+            tbody.insertBefore(newRow, totalRow);
+            calculateTotals();
+        }
+
+        // Add new expense row
+        function addExpenseRow(category) {
+            const name = prompt('Enter expense item name:');
+            if (!name) return;
+
+            const tbody = document.getElementById(category + '-tbody');
+            const totalRow = tbody.querySelector('.total-row');
+            
+            const newRow = document.createElement('tr');
+            newRow.setAttribute('data-category', category);
+            newRow.innerHTML = `
+                <td>${name}</td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td><input type="number" step="0.01" value="0" onchange="calculateTotals()"></td>
+                <td class="year-total">$0.00</td>
+                <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+            `;
+            
+            tbody.insertBefore(newRow, totalRow);
+            calculateTotals();
+        }
+
+        // Delete row
+        function deleteRow(button) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                const row = button.closest('tr');
+                row.remove();
+                calculateTotals();
+            }
+        }
+
+        // Add new year
+        function addYear() {
+            const year = prompt('Enter year:');
+            if (!year || isNaN(year)) return;
+            
+            const select = document.getElementById('yearSelect');
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            select.appendChild(option);
+            select.value = year;
+            currentYear = parseInt(year);
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            const data = {
+                year: currentYear,
+                budget: {}
+            };
+
+            const sections = ['revenue', 'home', 'daily-living', 'transportation', 'entertainment', 'financial'];
+            
+            sections.forEach(section => {
+                const tbody = document.getElementById(section + '-tbody');
+                if (!tbody) return;
+                
+                const rows = tbody.querySelectorAll('tr[data-category]');
+                data.budget[section] = [];
+                
+                rows.forEach(row => {
+                    const name = row.querySelector('td').textContent;
+                    const inputs = row.querySelectorAll('input[type="number"]');
+                    const values = Array.from(inputs).map(input => parseFloat(input.value) || 0);
+                    
+                    data.budget[section].push({
+                        name: name,
+                        values: values
+                    });
+                });
+            });
+
+            localStorage.setItem('budgetData_' + currentYear, JSON.stringify(data));
+            alert('Budget data saved successfully!');
+        }
+
+        // Load data from localStorage
+        function loadData() {
+            const year = document.getElementById('yearSelect').value;
+            const data = localStorage.getItem('budgetData_' + year);
+            
+            if (!data) {
+                alert('No saved data found for ' + year);
+                return;
+            }
+
+            const parsedData = JSON.parse(data);
+            loadBudgetData(parsedData.budget);
+            calculateTotals();
+            alert('Budget data loaded successfully!');
+        }
+
+        // Load from localStorage on page load
+        function loadFromLocalStorage() {
+            const data = localStorage.getItem('budgetData_' + currentYear);
+            if (data) {
+                const parsedData = JSON.parse(data);
+                loadBudgetData(parsedData.budget);
+                calculateTotals();
+            }
+        }
+
+        // Load budget data into tables
+        function loadBudgetData(budget) {
+            Object.keys(budget).forEach(section => {
+                const tbody = document.getElementById(section + '-tbody');
+                if (!tbody) return;
+                
+                const rows = tbody.querySelectorAll('tr[data-category]');
+                const items = budget[section];
+                
+                items.forEach((item, index) => {
+                    if (index < rows.length) {
+                        const row = rows[index];
+                        const inputs = row.querySelectorAll('input[type="number"]');
+                        
+                        inputs.forEach((input, valueIndex) => {
+                            if (valueIndex < item.values.length) {
+                                input.value = item.values[valueIndex];
+                            }
+                        });
+                    }
+                });
+            });
+        }
+
+        // Reset all data
+        function resetData() {
+            if (confirm('Are you sure you want to reset all data? This cannot be undone.')) {
+                const inputs = document.querySelectorAll('input[type="number"]');
+                inputs.forEach(input => input.value = '0');
+                calculateTotals();
+                alert('All data has been reset.');
+            }
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            let csv = 'Category,Item,Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec,Year Total\n';
+            
+            const sections = ['revenue', 'home', 'daily-living', 'transportation', 'entertainment', 'financial'];
+            
+            sections.forEach(section => {
+                const tbody = document.getElementById(section + '-tbody');
+                if (!tbody) return;
+                
+                const rows = tbody.querySelectorAll('tr[data-category]');
+                
+                rows.forEach(row => {
+                    const name = row.querySelector('td').textContent;
+                    const inputs = row.querySelectorAll('input[type="number"]');
+                    const values = Array.from(inputs).map(input => input.value);
+                    const yearTotal = row.querySelector('.year-total').textContent;
+                    
+                    csv += `${section},"${name}",${values.join(',')},${yearTotal}\n`;
+                });
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `budget_${currentYear}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Export to JSON
+        function exportToJSON() {
+            const data = {
+                year: currentYear,
+                budget: {}
+            };
+
+            const sections = ['revenue', 'home', 'daily-living', 'transportation', 'entertainment', 'financial'];
+            
+            sections.forEach(section => {
+                const tbody = document.getElementById(section + '-tbody');
+                if (!tbody) return;
+                
+                const rows = tbody.querySelectorAll('tr[data-category]');
+                data.budget[section] = [];
+                
+                rows.forEach(row => {
+                    const name = row.querySelector('td').textContent;
+                    const inputs = row.querySelectorAll('input[type="number"]');
+                    const values = Array.from(inputs).map(input => parseFloat(input.value) || 0);
+                    
+                    data.budget[section].push({
+                        name: name,
+                        values: values
+                    });
+                });
+            });
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `budget_${currentYear}.json`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Print budget with charts
+        function printBudget() {
+            // Generate charts for printing
+            generatePrintCharts();
+            
+            // Wait a moment for charts to render, then print
+            setTimeout(() => {
+                window.print();
+            }, 500);
+        }
+        
+        // Generate charts specifically for printing
+        function generatePrintCharts() {
+            const monthlyData = getMonthlyData();
+            const expenseData = getCategoryData();
+            
+            // Create print versions of charts with larger dimensions
+            createPrintMonthlyChart(monthlyData);
+            createPrintExpenseChart(expenseData);
+            createPrintSavingsChart(monthlyData);
+        }
+        
+        // Print version of monthly chart
+        function createPrintMonthlyChart(data) {
+            const canvas = document.getElementById('printMonthlyChart');
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Chart dimensions for print
+            const chartArea = { x: 80, y: 40, width: 440, height: 200 };
+            const maxValue = Math.max(...data.income, ...data.expenses) * 1.1 || 1000;
+            
+            // Draw axes
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(chartArea.x, chartArea.y);
+            ctx.lineTo(chartArea.x, chartArea.y + chartArea.height);
+            ctx.lineTo(chartArea.x + chartArea.width, chartArea.y + chartArea.height);
+            ctx.stroke();
+            
+            // Draw Y-axis tick marks and labels
+            const numYTicks = 5;
+            for (let i = 0; i <= numYTicks; i++) {
+                const value = (maxValue / numYTicks) * i;
+                const y = chartArea.y + chartArea.height - (i / numYTicks) * chartArea.height;
+                
+                // Tick mark
+                ctx.strokeStyle = '#000';
+                ctx.beginPath();
+                ctx.moveTo(chartArea.x - 8, y);
+                ctx.lineTo(chartArea.x, y);
+                ctx.stroke();
+                
+                // Grid line
+                if (i > 0) {
+                    ctx.strokeStyle = '#ccc';
+                    ctx.beginPath();
+                    ctx.moveTo(chartArea.x, y);
+                    ctx.lineTo(chartArea.x + chartArea.width, y);
+                    ctx.stroke();
+                }
+                
+                // Label
+                ctx.fillStyle = '#000';
+                ctx.font = '14px sans-serif';
+                ctx.textAlign = 'right';
+                ctx.fillText('$' + (value / 1000).toFixed(0) + 'k', chartArea.x - 12, y + 5);
+            }
+            
+            // Draw bars
+            const barWidth = chartArea.width / 12 / 3;
+            const barSpacing = chartArea.width / 12;
+            
+            data.months.forEach((month, index) => {
+                const x = chartArea.x + (index * barSpacing) + (barSpacing - barWidth * 2) / 2;
+                const incomeHeight = (data.income[index] / maxValue) * chartArea.height;
+                const expenseHeight = (data.expenses[index] / maxValue) * chartArea.height;
+                
+                // Income bar (green)
+                ctx.fillStyle = '#28a745';
+                ctx.fillRect(x, chartArea.y + chartArea.height - incomeHeight, barWidth, incomeHeight);
+                
+                // Expense bar (red)
+                ctx.fillStyle = '#dc3545';
+                ctx.fillRect(x + barWidth, chartArea.y + chartArea.height - expenseHeight, barWidth, expenseHeight);
+                
+                // Month labels
+                ctx.fillStyle = '#000';
+                ctx.font = '12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(month, x + barWidth, chartArea.y + chartArea.height + 20);
+            });
+            
+            // Legend
+            ctx.fillStyle = '#28a745';
+            ctx.fillRect(chartArea.x + chartArea.width - 120, chartArea.y, 15, 15);
+            ctx.fillStyle = '#000';
+            ctx.font = '14px sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText('Income', chartArea.x + chartArea.width - 100, chartArea.y + 12);
+            
+            ctx.fillStyle = '#dc3545';
+            ctx.fillRect(chartArea.x + chartArea.width - 120, chartArea.y + 20, 15, 15);
+            ctx.fillStyle = '#000';
+            ctx.fillText('Expenses', chartArea.x + chartArea.width - 100, chartArea.y + 32);
+        }
+        
+        // Print version of expense chart
+        function createPrintExpenseChart(data) {
+            const canvas = document.getElementById('printExpenseChart');
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 100;
+            
+            const total = Object.values(data).reduce((sum, val) => sum + val, 0);
+            if (total === 0) {
+                ctx.fillStyle = '#000';
+                ctx.font = '18px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('No expense data', centerX, centerY);
+                return;
+            }
+            
+            const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'];
+            let currentAngle = -Math.PI / 2;
+            
+            Object.entries(data).forEach(([category, value], index) => {
+                if (value > 0) {
+                    const sliceAngle = (value / total) * 2 * Math.PI;
+                    
+                    // Draw slice
+                    ctx.fillStyle = colors[index % colors.length];
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    // Draw border
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                    
+                    // Draw label
+                    const labelAngle = currentAngle + sliceAngle / 2;
+                    const labelX = centerX + Math.cos(labelAngle) * (radius + 30);
+                    const labelY = centerY + Math.sin(labelAngle) * (radius + 30);
+                    
+                    ctx.fillStyle = '#000';
+                    ctx.font = '12px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(category, labelX, labelY);
+                    
+                    currentAngle += sliceAngle;
+                }
+            });
+        }
+        
+        // Print version of savings chart
+        function createPrintSavingsChart(data) {
+            const canvas = document.getElementById('printSavingsChart');
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Chart dimensions for print
+            const chartArea = { x: 80, y: 40, width: 440, height: 200 };
+            const maxValue = Math.max(...data.savings.map(Math.abs)) * 1.1 || 1000;
+            const minValue = Math.min(...data.savings) * 1.1;
+            const range = maxValue - minValue;
+            
+            // Draw axes
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(chartArea.x, chartArea.y);
+            ctx.lineTo(chartArea.x, chartArea.y + chartArea.height);
+            ctx.lineTo(chartArea.x + chartArea.width, chartArea.y + chartArea.height);
+            ctx.stroke();
+            
+            // Draw Y-axis tick marks and labels
+            const numYTicks = 5;
+            for (let i = 0; i <= numYTicks; i++) {
+                const value = minValue + (range / numYTicks) * i;
+                const y = chartArea.y + chartArea.height - (i / numYTicks) * chartArea.height;
+                
+                // Tick mark
+                ctx.strokeStyle = '#000';
+                ctx.beginPath();
+                ctx.moveTo(chartArea.x - 8, y);
+                ctx.lineTo(chartArea.x, y);
+                ctx.stroke();
+                
+                // Grid line
+                if (i > 0 && i < numYTicks) {
+                    ctx.strokeStyle = '#ccc';
+                    ctx.beginPath();
+                    ctx.moveTo(chartArea.x, y);
+                    ctx.lineTo(chartArea.x + chartArea.width, y);
+                    ctx.stroke();
+                }
+                
+                // Label
+                ctx.fillStyle = '#000';
+                ctx.font = '14px sans-serif';
+                ctx.textAlign = 'right';
+                const labelValue = value >= 0 ? '+$' + (Math.abs(value) / 1000).toFixed(0) + 'k' : '-$' + (Math.abs(value) / 1000).toFixed(0) + 'k';
+                ctx.fillText(labelValue, chartArea.x - 12, y + 5);
+            }
+            
+            // Draw zero line
+            const zeroY = chartArea.y + chartArea.height - ((0 - minValue) / range) * chartArea.height;
+            ctx.strokeStyle = '#666';
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(chartArea.x, zeroY);
+            ctx.lineTo(chartArea.x + chartArea.width, zeroY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Draw line
+            ctx.strokeStyle = '#667eea';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            
+            data.savings.forEach((savings, index) => {
+                const x = chartArea.x + (index / 11) * chartArea.width;
+                const y = chartArea.y + chartArea.height - ((savings - minValue) / range) * chartArea.height;
+                
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+                
+                // Draw point
+                ctx.fillStyle = savings >= 0 ? '#28a745' : '#dc3545';
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+            
+            ctx.stroke();
+            
+            // Month labels
+            ctx.fillStyle = '#000';
+            ctx.font = '12px sans-serif';
+            ctx.textAlign = 'center';
+            data.months.forEach((month, index) => {
+                const x = chartArea.x + (index / 11) * chartArea.width;
+                ctx.fillText(month, x, chartArea.y + chartArea.height + 20);
+            });
+        }
+
+        // Auto-save every 30 seconds
+        setInterval(function() {
+            if (document.querySelector('input[type="number"]:focus')) {
+                // Don't auto-save while user is typing
+                return;
+            }
+            
+            try {
+                saveData();
+            } catch (e) {
+                // Silent fail for auto-save
+            }
+        }, 30000);
+
+        // Chart functionality
+        function showCharts() {
+            createChartModal();
+            generateCharts();
+        }
+
+        function createChartModal() {
+            // Remove existing modal if present
+            const existingModal = document.getElementById('chartModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            // Create modal HTML
+            const modal = document.createElement('div');
+            modal.id = 'chartModal';
+            modal.className = 'chart-modal';
+            modal.innerHTML = `
+                <div class="chart-modal-content">
+                    <div class="chart-modal-header">
+                        <h2>Budget Activity Charts</h2>
+                        <button class="chart-close-btn" onclick="closeChartModal()" aria-label="Close charts modal">&times;</button>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-section">
+                            <h3>Monthly Income vs Expenses</h3>
+                            <canvas id="monthlyChart" width="400" height="200"></canvas>
+                        </div>
+                        <div class="chart-section">
+                            <h3>Expense Breakdown by Category</h3>
+                            <canvas id="expenseChart" width="400" height="200"></canvas>
+                        </div>
+                        <div class="chart-section">
+                            <h3>Savings Trend</h3>
+                            <canvas id="savingsChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            
+            // Show modal with animation
+            setTimeout(() => {
+                modal.style.opacity = '1';
+                modal.querySelector('.chart-modal-content').style.transform = 'scale(1)';
+            }, 10);
+        }
+
+        function closeChartModal() {
+            const modal = document.getElementById('chartModal');
+            if (modal) {
+                modal.style.opacity = '0';
+                modal.querySelector('.chart-modal-content').style.transform = 'scale(0.8)';
+                setTimeout(() => {
+                    modal.remove();
+                }, 300);
+            }
+        }
+
+        function generateCharts() {
+            // Get data for charts
+            const monthlyData = getMonthlyData();
+            const expenseData = getCategoryData();
+            
+            // Create charts
+            createMonthlyChart(monthlyData);
+            createExpenseChart(expenseData);
+            createSavingsChart(monthlyData);
+        }
+
+        function getMonthlyData() {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const monthlyIncome = new Array(12).fill(0);
+            const monthlyExpenses = new Array(12).fill(0);
+
+            // Get income data
+            const revenueRows = document.querySelectorAll('#revenue-tbody tr[data-category="income"]');
+            revenueRows.forEach(row => {
+                const inputs = row.querySelectorAll('input[type="number"]');
+                inputs.forEach((input, index) => {
+                    monthlyIncome[index] += parseFloat(input.value) || 0;
+                });
+            });
+
+            // Get expense data
+            const expenseSections = ['home', 'daily-living', 'transportation', 'entertainment', 'financial'];
+            expenseSections.forEach(section => {
+                const rows = document.querySelectorAll(`#${section}-tbody tr[data-category="${section}"]`);
+                rows.forEach(row => {
+                    const inputs = row.querySelectorAll('input[type="number"]');
+                    inputs.forEach((input, index) => {
+                        monthlyExpenses[index] += parseFloat(input.value) || 0;
+                    });
+                });
+            });
+
+            return {
+                months,
+                income: monthlyIncome,
+                expenses: monthlyExpenses,
+                savings: monthlyIncome.map((income, index) => income - monthlyExpenses[index])
+            };
+        }
+
+        function getCategoryData() {
+            const categories = {
+                'Home': 0,
+                'Daily Living': 0,
+                'Transportation': 0,
+                'Entertainment': 0,
+                'Financial': 0
+            };
+
+            const sectionMap = {
+                'home': 'Home',
+                'daily-living': 'Daily Living',
+                'transportation': 'Transportation',
+                'entertainment': 'Entertainment',
+                'financial': 'Financial'
+            };
+
+            Object.keys(sectionMap).forEach(section => {
+                const rows = document.querySelectorAll(`#${section}-tbody tr[data-category="${section}"]`);
+                rows.forEach(row => {
+                    const inputs = row.querySelectorAll('input[type="number"]');
+                    inputs.forEach(input => {
+                        categories[sectionMap[section]] += parseFloat(input.value) || 0;
+                    });
+                });
+            });
+
+            return categories;
+        }
+
+        function createMonthlyChart(data) {
+            const canvas = document.getElementById('monthlyChart');
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Chart dimensions
+            const chartArea = { x: 50, y: 30, width: 320, height: 140 };
+            const maxValue = Math.max(...data.income, ...data.expenses) * 1.1 || 1000;
+            
+            // Draw axes
+            ctx.strokeStyle = '#ccc';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(chartArea.x, chartArea.y);
+            ctx.lineTo(chartArea.x, chartArea.y + chartArea.height);
+            ctx.lineTo(chartArea.x + chartArea.width, chartArea.y + chartArea.height);
+            ctx.stroke();
+            
+            // Draw Y-axis tick marks and labels
+            const numYTicks = 5;
+            for (let i = 0; i <= numYTicks; i++) {
+                const value = (maxValue / numYTicks) * i;
+                const y = chartArea.y + chartArea.height - (i / numYTicks) * chartArea.height;
+                
+                // Tick mark
+                ctx.strokeStyle = '#ccc';
+                ctx.beginPath();
+                ctx.moveTo(chartArea.x - 5, y);
+                ctx.lineTo(chartArea.x, y);
+                ctx.stroke();
+                
+                // Grid line
+                if (i > 0) {
+                    ctx.strokeStyle = '#f0f0f0';
+                    ctx.beginPath();
+                    ctx.moveTo(chartArea.x, y);
+                    ctx.lineTo(chartArea.x + chartArea.width, y);
+                    ctx.stroke();
+                }
+                
+                // Label
+                ctx.fillStyle = '#666';
+                ctx.font = '10px sans-serif';
+                ctx.textAlign = 'right';
+                ctx.fillText('$' + (value / 1000).toFixed(0) + 'k', chartArea.x - 8, y + 3);
+            }
+            
+            // Draw X-axis tick marks
+            data.months.forEach((month, index) => {
+                const x = chartArea.x + (index * (chartArea.width / 12)) + (chartArea.width / 12 / 2);
+                
+                // Tick mark
+                ctx.strokeStyle = '#ccc';
+                ctx.beginPath();
+                ctx.moveTo(x, chartArea.y + chartArea.height);
+                ctx.lineTo(x, chartArea.y + chartArea.height + 5);
+                ctx.stroke();
+            });
+            
+            // Draw bars
+            const barWidth = chartArea.width / 12 / 3;
+            const barSpacing = chartArea.width / 12;
+            
+            data.months.forEach((month, index) => {
+                const x = chartArea.x + (index * barSpacing) + (barSpacing - barWidth * 2) / 2;
+                const incomeHeight = (data.income[index] / maxValue) * chartArea.height;
+                const expenseHeight = (data.expenses[index] / maxValue) * chartArea.height;
+                
+                // Income bar (green)
+                ctx.fillStyle = '#28a745';
+                ctx.fillRect(x, chartArea.y + chartArea.height - incomeHeight, barWidth, incomeHeight);
+                
+                // Expense bar (red)
+                ctx.fillStyle = '#dc3545';
+                ctx.fillRect(x + barWidth, chartArea.y + chartArea.height - expenseHeight, barWidth, expenseHeight);
+                
+                // Month labels
+                ctx.fillStyle = '#333';
+                ctx.font = '10px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(month, x + barWidth, chartArea.y + chartArea.height + 15);
+            });
+            
+            // Legend
+            ctx.fillStyle = '#28a745';
+            ctx.fillRect(chartArea.x + chartArea.width - 100, chartArea.y, 10, 10);
+            ctx.fillStyle = '#333';
+            ctx.font = '12px sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText('Income', chartArea.x + chartArea.width - 85, chartArea.y + 9);
+            
+            ctx.fillStyle = '#dc3545';
+            ctx.fillRect(chartArea.x + chartArea.width - 100, chartArea.y + 15, 10, 10);
+            ctx.fillStyle = '#333';
+            ctx.fillText('Expenses', chartArea.x + chartArea.width - 85, chartArea.y + 24);
+        }
+
+        function createExpenseChart(data) {
+            const canvas = document.getElementById('expenseChart');
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 70;
+            
+            const total = Object.values(data).reduce((sum, val) => sum + val, 0);
+            if (total === 0) {
+                ctx.fillStyle = '#666';
+                ctx.font = '14px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('No expense data', centerX, centerY);
+                return;
+            }
+            
+            const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'];
+            let currentAngle = -Math.PI / 2;
+            
+            Object.entries(data).forEach(([category, value], index) => {
+                if (value > 0) {
+                    const sliceAngle = (value / total) * 2 * Math.PI;
+                    
+                    // Draw slice
+                    ctx.fillStyle = colors[index % colors.length];
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    // Draw label
+                    const labelAngle = currentAngle + sliceAngle / 2;
+                    const labelX = centerX + Math.cos(labelAngle) * (radius + 20);
+                    const labelY = centerY + Math.sin(labelAngle) * (radius + 20);
+                    
+                    ctx.fillStyle = '#333';
+                    ctx.font = '10px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(category, labelX, labelY);
+                    
+                    currentAngle += sliceAngle;
+                }
+            });
+        }
+
+        function createSavingsChart(data) {
+            const canvas = document.getElementById('savingsChart');
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Chart dimensions
+            const chartArea = { x: 50, y: 30, width: 320, height: 140 };
+            const maxValue = Math.max(...data.savings.map(Math.abs)) * 1.1 || 1000;
+            const minValue = Math.min(...data.savings) * 1.1;
+            const range = maxValue - minValue;
+            
+            // Draw axes
+            ctx.strokeStyle = '#ccc';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(chartArea.x, chartArea.y);
+            ctx.lineTo(chartArea.x, chartArea.y + chartArea.height);
+            ctx.lineTo(chartArea.x + chartArea.width, chartArea.y + chartArea.height);
+            ctx.stroke();
+            
+            // Draw Y-axis tick marks and labels
+            const numYTicks = 5;
+            for (let i = 0; i <= numYTicks; i++) {
+                const value = minValue + (range / numYTicks) * i;
+                const y = chartArea.y + chartArea.height - (i / numYTicks) * chartArea.height;
+                
+                // Tick mark
+                ctx.strokeStyle = '#ccc';
+                ctx.beginPath();
+                ctx.moveTo(chartArea.x - 5, y);
+                ctx.lineTo(chartArea.x, y);
+                ctx.stroke();
+                
+                // Grid line
+                if (i > 0 && i < numYTicks) {
+                    ctx.strokeStyle = '#f0f0f0';
+                    ctx.beginPath();
+                    ctx.moveTo(chartArea.x, y);
+                    ctx.lineTo(chartArea.x + chartArea.width, y);
+                    ctx.stroke();
+                }
+                
+                // Label
+                ctx.fillStyle = '#666';
+                ctx.font = '10px sans-serif';
+                ctx.textAlign = 'right';
+                const labelValue = value >= 0 ? '+$' + (Math.abs(value) / 1000).toFixed(0) + 'k' : '-$' + (Math.abs(value) / 1000).toFixed(0) + 'k';
+                ctx.fillText(labelValue, chartArea.x - 8, y + 3);
+            }
+            
+            // Draw X-axis tick marks
+            data.months.forEach((month, index) => {
+                const x = chartArea.x + (index / 11) * chartArea.width;
+                
+                // Tick mark
+                ctx.strokeStyle = '#ccc';
+                ctx.beginPath();
+                ctx.moveTo(x, chartArea.y + chartArea.height);
+                ctx.lineTo(x, chartArea.y + chartArea.height + 5);
+                ctx.stroke();
+            });
+            
+            // Draw zero line
+            const zeroY = chartArea.y + chartArea.height - ((0 - minValue) / range) * chartArea.height;
+            ctx.strokeStyle = '#999';
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(chartArea.x, zeroY);
+            ctx.lineTo(chartArea.x + chartArea.width, zeroY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Draw line
+            ctx.strokeStyle = '#667eea';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            
+            data.savings.forEach((savings, index) => {
+                const x = chartArea.x + (index / 11) * chartArea.width;
+                const y = chartArea.y + chartArea.height - ((savings - minValue) / range) * chartArea.height;
+                
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+                
+                // Draw point
+                ctx.fillStyle = savings >= 0 ? '#28a745' : '#dc3545';
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+            
+            ctx.stroke();
+            
+            // Month labels
+            ctx.fillStyle = '#333';
+            ctx.font = '10px sans-serif';
+            ctx.textAlign = 'center';
+            data.months.forEach((month, index) => {
+                const x = chartArea.x + (index / 11) * chartArea.width;
+                ctx.fillText(month, x, chartArea.y + chartArea.height + 15);
+            });
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('chartModal');
+            if (modal && event.target === modal) {
+                closeChartModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeChartModal();
+            }
+        });
+
+        // Open help page
+        function openHelp() {
+            window.open('help.html', '_blank', 'width=1000,height=700,scrollbars=yes,resizable=yes');
+        }
+    </script>
+</body>
+</html>
+
