@@ -2,6 +2,10 @@
 
 A comprehensive, accessible personal finance management application with professional charts and 508 compliance.
 
+## 🚀 Live Demo
+
+**Try it now**: [https://joefabre.github.io/budget-tracker/](https://joefabre.github.io/budget-tracker/)
+
 ## Features
 
 ### 📊 Financial Management
