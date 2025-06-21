@@ -762,6 +762,8 @@
 
         <!-- Export Controls -->
         <div class="export-controls">
+            <input type="file" id="importFileInput" accept=".json,.csv" style="display: none;" onchange="handleFileImport(event)">
+            <button onclick="document.getElementById('importFileInput').click()">Import Data</button>
             <button onclick="exportToCSV()">Export to CSV</button>
             <button onclick="exportToJSON()">Export to JSON</button>
             <button onclick="printBudget()">Print Budget</button>
@@ -1156,6 +1158,197 @@
             window.URL.revokeObjectURL(url);
         }
 
+        // Handle file import
+        function handleFileImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const fileContent = e.target.result;
+                    
+                    if (file.name.endsWith('.json')) {
+                        importJSONData(fileContent);
+                    } else if (file.name.endsWith('.csv')) {
+                        importCSVData(fileContent);
+                    } else {
+                        alert('Please select a valid JSON or CSV file.');
+                        return;
+                    }
+                } catch (error) {
+                    console.error('Import error:', error);
+                    alert('Error importing file. Please check the file format and try again.');
+                }
+            };
+
+            reader.readAsText(file);
+            // Reset file input to allow re-importing the same file
+            event.target.value = '';
+        }
+
+        // Import JSON data
+        function importJSONData(jsonContent) {
+            try {
+                const data = JSON.parse(jsonContent);
+                
+                if (!data.budget) {
+                    alert('Invalid JSON format. Missing budget data.');
+                    return;
+                }
+
+                // Set the year if provided
+                if (data.year) {
+                    const yearSelect = document.getElementById('yearSelect');
+                    const existingOption = yearSelect.querySelector(`option[value="${data.year}"]`);
+                    if (!existingOption) {
+                        const option = document.createElement('option');
+                        option.value = data.year;
+                        option.textContent = data.year;
+                        yearSelect.appendChild(option);
+                    }
+                    yearSelect.value = data.year;
+                    currentYear = parseInt(data.year);
+                }
+
+                // Clear current data first
+                resetDataSilent();
+
+                // Load the imported data
+                loadBudgetData(data.budget);
+                calculateTotals();
+                
+                alert('Data imported successfully!');
+            } catch (error) {
+                console.error('JSON import error:', error);
+                alert('Error importing JSON file. Please check the file format.');
+            }
+        }
+
+        // Import CSV data
+        function importCSVData(csvContent) {
+            try {
+                const lines = csvContent.split('\n').filter(line => line.trim());
+                if (lines.length < 2) {
+                    alert('Invalid CSV format. File appears to be empty.');
+                    return;
+                }
+
+                // Clear current data first
+                resetDataSilent();
+
+                const data = { budget: {} };
+                const sections = ['revenue', 'home', 'daily-living', 'transportation', 'entertainment', 'financial'];
+                
+                // Initialize budget structure
+                sections.forEach(section => {
+                    data.budget[section] = [];
+                });
+
+                // Parse CSV (skip header)
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line) continue;
+
+                    // Parse CSV line (handle quoted fields)
+                    const values = parseCSVLine(line);
+                    if (values.length < 15) continue; // Need at least category, name, 12 months, year total
+
+                    const category = values[0];
+                    const name = values[1];
+                    const monthlyValues = values.slice(2, 14).map(v => parseFloat(v) || 0);
+
+                    // Map category names
+                    let section = category;
+                    if (category === 'revenue') section = 'revenue';
+                    else if (sections.includes(category)) section = category;
+                    else continue; // Skip unknown categories
+
+                    data.budget[section].push({
+                        name: name,
+                        values: monthlyValues
+                    });
+                }
+
+                // Load the imported data
+                loadImportedBudgetData(data.budget);
+                calculateTotals();
+                
+                alert('CSV data imported successfully!');
+            } catch (error) {
+                console.error('CSV import error:', error);
+                alert('Error importing CSV file. Please check the file format.');
+            }
+        }
+
+        // Parse CSV line handling quoted fields
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current);
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            
+            result.push(current);
+            return result;
+        }
+
+        // Load imported budget data (create new rows as needed)
+        function loadImportedBudgetData(budget) {
+            Object.keys(budget).forEach(section => {
+                const tbody = document.getElementById(section + '-tbody');
+                if (!tbody) return;
+                
+                const items = budget[section];
+                if (!items || items.length === 0) return;
+
+                // Clear existing rows except total row
+                const existingRows = tbody.querySelectorAll('tr[data-category]');
+                existingRows.forEach(row => row.remove());
+
+                const totalRow = tbody.querySelector('.total-row');
+                
+                // Add rows for imported data
+                items.forEach(item => {
+                    const newRow = document.createElement('tr');
+                    const category = section === 'revenue' ? 'income' : section;
+                    newRow.setAttribute('data-category', category);
+                    
+                    let inputsHTML = '';
+                    for (let i = 0; i < 12; i++) {
+                        const value = (item.values && item.values[i]) ? item.values[i] : 0;
+                        inputsHTML += `<td><input type="number" step="0.01" value="${value}" onchange="calculateTotals()"></td>`;
+                    }
+                    
+                    newRow.innerHTML = `
+                        <td>${item.name}</td>
+                        ${inputsHTML}
+                        <td class="year-total">$0.00</td>
+                        <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                    `;
+                    
+                    tbody.insertBefore(newRow, totalRow);
+                });
+            });
+        }
+
+        // Reset data without alert (for import)
+        function resetDataSilent() {
+            const inputs = document.querySelectorAll('input[type="number"]');
+            inputs.forEach(input => input.value = '0');
+        }
+
         // Print budget with charts
         function printBudget() {
             // Generate charts for printing
@@ -1421,15 +1614,15 @@
 
         // Auto-save every 30 seconds
         setInterval(function() {
-            if (document.querySelector('input[type="number"]:focus')) {
-                // Don't auto-save while user is typing
+            // Check if any input is focused, if yes, skip auto-save
+            if (document.activeElement.tagName === 'INPUT' && document.activeElement.type === 'number') {
                 return;
             }
-            
+
             try {
                 saveData();
             } catch (e) {
-                // Silent fail for auto-save
+                console.error('Auto-save failed:', e);
             }
         }, 30000);
 
