@@ -1,0 +1,25 @@
+{
+  "links": [
+    {
+      "url": "https://joefabre.github.io/budget-tracker/",
+      "status": 200,
+      "state": "OK",
+      "failureDetails": []
+    },
+    {
+      "url": "https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js",
+      "status": 200,
+      "state": "OK",
+      "parent": "https://joefabre.github.io/budget-tracker/",
+      "failureDetails": []
+    },
+    {
+      "url": "https://joefabre.github.io/budget-tracker/assets/css/style.css?v=8efb02249fc772b062e347d1a345ee8c65dbe60c",
+      "status": 200,
+      "state": "OK",
+      "parent": "https://joefabre.github.io/budget-tracker/",
+      "failureDetails": []
+    }
+  ],
+  "passed": true
+}

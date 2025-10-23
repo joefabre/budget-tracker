@@ -797,6 +797,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             calculateTotals();
             loadFromLocalStorage();
+            addResponsiveDataLabels();
         });
 
         // Toggle section visibility
@@ -911,6 +912,23 @@
             }).format(amount);
         }
 
+        // Add data-label attributes to table cells for responsive/mobile layouts
+        function addResponsiveDataLabels() {
+            const tables = document.querySelectorAll('.budget-table');
+            tables.forEach(table => {
+                const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
+                const rows = table.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    cells.forEach((cell, idx) => {
+                        if (headers[idx]) {
+                            cell.setAttribute('data-label', headers[idx]);
+                        }
+                    });
+                });
+            });
+        }
+
         // Add new income row
         function addIncomeRow() {
             const name = prompt('Enter income source name:');
@@ -941,6 +959,7 @@
             
             tbody.insertBefore(newRow, totalRow);
             calculateTotals();
+            addResponsiveDataLabels();
         }
 
         // Add new expense row
@@ -973,6 +992,7 @@
             
             tbody.insertBefore(newRow, totalRow);
             calculateTotals();
+            addResponsiveDataLabels();
         }
 
         // Delete row
@@ -981,6 +1001,7 @@
                 const row = button.closest('tr');
                 row.remove();
                 calculateTotals();
+                addResponsiveDataLabels();
             }
         }
 
@@ -1043,6 +1064,7 @@
             const parsedData = JSON.parse(data);
             loadBudgetData(parsedData.budget);
             calculateTotals();
+            addResponsiveDataLabels();
             alert('Budget data loaded successfully!');
         }
 
@@ -1053,6 +1075,7 @@
                 const parsedData = JSON.parse(data);
                 loadBudgetData(parsedData.budget);
                 calculateTotals();
+                addResponsiveDataLabels();
             }
         }
 
@@ -1083,9 +1106,10 @@
         // Reset all data
         function resetData() {
             if (confirm('Are you sure you want to reset all data? This cannot be undone.')) {
-                const inputs = document.querySelectorAll('input[type="number"]');
+                const inputs = document.querySelectorAll('input[type=\"number\"]');
                 inputs.forEach(input => input.value = '0');
                 calculateTotals();
+                addResponsiveDataLabels();
                 alert('All data has been reset.');
             }
         }
@@ -1217,6 +1241,7 @@
                 // Load the imported data
                 loadBudgetData(data.budget);
                 calculateTotals();
+                addResponsiveDataLabels();
                 
                 alert('Data imported successfully!');
             } catch (error) {
@@ -1273,6 +1298,7 @@
                 // Load the imported data
                 loadImportedBudgetData(data.budget);
                 calculateTotals();
+                addResponsiveDataLabels();
                 
                 alert('CSV data imported successfully!');
             } catch (error) {

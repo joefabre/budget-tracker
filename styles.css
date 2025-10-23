@@ -258,9 +258,9 @@ body {
 .budget-table td:nth-child(12),
 .budget-table th:nth-child(13),
 .budget-table td:nth-child(13) {
-    width: 75px;
-    min-width: 75px;
-    max-width: 75px;
+    width: 100px;
+    min-width: 100px;
+    max-width: 100px;
     text-align: center;
     overflow: hidden;
     white-space: nowrap;
@@ -359,6 +359,36 @@ body {
     outline-offset: 1px;
     border-color: #667eea;
     background: #ffffff;
+}
+
+/* Ensure form field text is always visible across themes and Safari autofill */
+.budget-table input,
+input,
+select,
+textarea {
+    color: #111;
+    background-color: #fff;
+    caret-color: #111;
+    -webkit-text-fill-color: #111; /* Safari/dark mode/autofill */
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #111;
+    -webkit-box-shadow: 0 0 0px 1000px #fff inset;
+            box-shadow: 0 0 0px 1000px #fff inset;
+}
+
+@media (prefers-color-scheme: dark) {
+    .budget-table input,
+    input,
+    select,
+    textarea {
+        color: #111;
+        background-color: #fff;
+        -webkit-text-fill-color: #111;
+    }
 }
 
 .month-header {
